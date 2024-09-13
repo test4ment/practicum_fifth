@@ -14,15 +14,15 @@ class LoginPage:
 
     @dispatch(str, str)
     def login(self, username: str, password: str):
-        self.page.locator("[data-test=\"username\"]").click()
-        self.page.locator("[data-test=\"username\"]").fill(username)
-        self.page.locator("[data-test=\"password\"]").click()
-        self.page.locator("[data-test=\"password\"]").fill(password)
+        self.username.click()
+        self.username.fill(username)
+        self.password.click()
+        self.password.fill(password)
         self.login()
     
     @dispatch()
     def login(self):
-        self.page.locator("[data-test=\"login-button\"]").click()
+        self.login_button.click()
     
     def check_error(self):
         return self.error
