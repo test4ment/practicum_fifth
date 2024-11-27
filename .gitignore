@@ -135,6 +135,7 @@ venv.bak/
 pyvenv.cfg
 bin/
 lib64/
+Scripts/
 
 # Spyder project settings
 .spyderproject
