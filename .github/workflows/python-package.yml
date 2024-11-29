@@ -37,5 +37,5 @@ jobs:
       run: |
         for d in */ ; do
           if [ -f "$d/requirements.txt" ]; then pip install -r "$d/requirements.txt"; fi
-          pytest "$d"
+          xvfb-run pytest "$d"
         done
