@@ -34,7 +34,7 @@ def test_auth_token(api_request_context: APIRequestContext):
     assert resp.ok
     assert resp.json()["token"]
     
-    headers |= {"Authorization": f"Basic {resp.json()["token"]}"}
+    del resp
 
 
 def test_booking_create(api_request_context: APIRequestContext):
