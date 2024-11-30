@@ -2,11 +2,53 @@ from playwright.sync_api import Playwright, APIRequestContext
 import pytest
 from typing import Generator
 from pages_classes import GetTokenUrl, CreateBookingUrl, sample_booking
+import jsonschema
 
 headers = {
         "Accept": "application/json",
         "Content-Type": "application/json"
         }
+
+auth_response_schema = {
+    "token": "string"
+}
+
+booking_response_schema = {
+    "bookingid": {
+        "type": "integer"
+        },
+    "booking": {
+        "type": "object",
+        "properties": {
+            "firstname": {
+                "type": "string"
+            },
+            "lastname": {
+                "type": "string"
+            },
+            "totalprice": {
+                "type": "number"
+            },
+            "depositpaid": {
+                "type": "boolean"
+            },
+            "bookingdates": {
+                "type": "object",
+                "properties": {
+                    "checkin": {
+                        "type": "string"
+                    },
+                    "checkout": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalneeds": {
+                "type": "string"
+            }
+        }
+    }
+}
 
 
 @pytest.fixture(scope="session")
@@ -32,7 +74,8 @@ def test_auth_token(api_request_context: APIRequestContext):
         )
     
     assert resp.ok
-    assert resp.json()["token"]
+    
+    jsonschema.validate(resp.json(), auth_response_schema)
     
     del resp
 
@@ -47,5 +90,4 @@ def test_booking_create(api_request_context: APIRequestContext):
     
     assert resp.ok
 
-    assert all([key in resp.json() for key in {"booking", "bookingid"}])
-    assert all([key in resp.json()["booking"] for key in sample_booking.keys()])
+    jsonschema.validate(resp.json(), booking_response_schema)
