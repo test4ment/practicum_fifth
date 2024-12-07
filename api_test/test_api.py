@@ -45,9 +45,11 @@ booking_response_schema = {
             },
             "additionalneeds": {
                 "type": "string"
-            }
+            },
+            "required": ["firstname", "lastname", "totalprice", "depositpaid", "bookingdates"]
         }
-    }
+    },
+    "required": ["bookingid", "booking"]
 }
 
 
