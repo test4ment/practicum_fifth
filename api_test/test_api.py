@@ -1,7 +1,7 @@
 from playwright.sync_api import Playwright, APIRequestContext
 import pytest
 from typing import Generator
-from pages_classes import GetTokenUrl, CreateBookingUrl, sample_booking
+from pages_classes import DeleteBookingUrl, GetTokenUrl, CreateBookingUrl, sample_booking
 import jsonschema
 
 headers = {
@@ -93,3 +93,5 @@ def test_booking_create(api_request_context: APIRequestContext):
     assert resp.ok
 
     jsonschema.validate(resp.json(), booking_response_schema)
+    
+    api_request_context.delete(DeleteBookingUrl(resp.json()["bookingid"]).make_request(), headers = headers)

@@ -32,3 +32,7 @@ class CreateBookingUrl(BaseTestUrl):
     def __init__(self) -> None:
         self.url = "/booking"
         self.data = sample_booking
+
+class DeleteBookingUrl(BaseTestUrl):
+    def __init__(self, booking_id: str | int) -> None:
+        self.url = str(booking_id) 
