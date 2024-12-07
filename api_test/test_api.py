@@ -79,7 +79,7 @@ def test_auth_token(api_request_context: APIRequestContext):
     
     jsonschema.validate(resp.json(), auth_response_schema)
     
-    del resp
+    headers |= {"Authorization": f"Basic {resp.json()["token"]}"}
 
 
 def test_booking_create(api_request_context: APIRequestContext):
