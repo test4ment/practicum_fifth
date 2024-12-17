@@ -79,7 +79,7 @@ def test_auth_token(api_request_context: APIRequestContext):
     
     jsonschema.validate(resp.json(), auth_response_schema)
     
-    headers |= {"Authorization": f"Basic {resp.json()["token"]}"}
+    headers |= {"Cookie": f"token={resp.json()["token"]}"}
 
 
 def test_booking_create(api_request_context: APIRequestContext):
@@ -94,4 +94,6 @@ def test_booking_create(api_request_context: APIRequestContext):
 
     jsonschema.validate(resp.json(), booking_response_schema)
     
-    api_request_context.delete(DeleteBookingUrl(resp.json()["bookingid"]).make_request(), headers = headers)
+    deletion = api_request_context.delete(DeleteBookingUrl(resp.json()["bookingid"]).make_request(), headers = headers)
+
+    assert deletion.ok
