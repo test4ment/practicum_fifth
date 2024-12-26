@@ -1,14 +1,7 @@
-sample_booking = {
-                    "firstname" : "Michael",
-                    "lastname" : "White",
-                    "totalprice" : 1337,
-                    "depositpaid" : False,
-                    "bookingdates" : {
-                        "checkin" : "9999-31-12",
-                        "checkout" : "10000-99-99"
-                    },
-                    "additionalneeds" : "Playwright autotest"
-                }
+import json
+
+valid_jsons = json.load(open("valid_data.json", "r"))
+invalid_jsons = json.load(open("invalid_data.json", "r"))
 
 class BaseTestUrl:
     def __init__(self) -> None:
@@ -17,22 +10,34 @@ class BaseTestUrl:
     def make_request(self) -> str:
         return self.url
     
-    def make_data(self) -> dict[str, str | int | bool | dict | list]:
+    def make_data(self) -> list[dict[str, str | int | bool | dict | list]]:
         return self.data
-    
-class GetTokenUrl(BaseTestUrl):
+
+
+class GetTokenValid(BaseTestUrl):
     def __init__(self) -> None:
         self.url = "/auth"
-        self.data = {
-            "username": "admin",
-            "password": "password123"
-        }
+        self.data = valid_jsons["username_password"]
 
-class CreateBookingUrl(BaseTestUrl):
+
+class GetTokenInvalid(GetTokenValid):
+    def __init__(self) -> None:
+        super().__init__()
+        self.data = invalid_jsons["username_password"]
+
+
+class CreateBookingValid(BaseTestUrl):
     def __init__(self) -> None:
         self.url = "/booking"
-        self.data = sample_booking
+        self.data = valid_jsons["booking"]
 
-class DeleteBookingUrl(BaseTestUrl):
+
+class CreateBookingInvalid(CreateBookingValid):
+    def __init__(self) -> None:
+        super().__init__()
+        self.data = invalid_jsons["booking"]
+
+
+class DeleteBookingValid(BaseTestUrl):
     def __init__(self, booking_id: str | int) -> None:
         self.url = "/booking/" + str(booking_id) 

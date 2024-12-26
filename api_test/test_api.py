@@ -1,8 +1,9 @@
 from playwright.sync_api import Playwright, APIRequestContext
 import pytest
 from typing import Generator
-from pages_classes import DeleteBookingUrl, GetTokenUrl, CreateBookingUrl, sample_booking
+from pages_classes import DeleteBookingValid, GetTokenValid, CreateBookingValid, GetTokenInvalid, CreateBookingInvalid
 import jsonschema
+from itertools import repeat
 
 headers = {
         "Accept": "application/json",
@@ -52,6 +53,11 @@ booking_response_schema = {
     "required": ["bookingid", "booking"]
 }
 
+valid_token_test = GetTokenValid()
+invalid_token_test = GetTokenInvalid()
+valid_booking_test = CreateBookingValid()
+invalid_booking_test = CreateBookingInvalid()
+
 
 @pytest.fixture(scope="session")
 def api_request_context(playwright: Playwright) -> Generator[APIRequestContext, None, None]:
@@ -61,18 +67,14 @@ def api_request_context(playwright: Playwright) -> Generator[APIRequestContext, 
     yield request_context
     request_context.dispose()
 
-@pytest.fixture(scope="session", autouse=True)
-def get_auth_token(api_request_context: APIRequestContext):
-    test_auth_token(api_request_context)
 
-
-def test_auth_token(api_request_context: APIRequestContext):
+@pytest.mark.parametrize("data,auth_token_url", zip(valid_token_test.make_data(), repeat(valid_token_test.make_request())))
+def test_auth_token_valid(api_request_context: APIRequestContext, data, auth_token_url):
     global headers
     
-    auth_token_url = GetTokenUrl()
     resp = api_request_context.post(
-        auth_token_url.make_request(), 
-        data = auth_token_url.make_data()
+        auth_token_url, 
+        data = data
         )
     
     assert resp.ok
@@ -82,18 +84,35 @@ def test_auth_token(api_request_context: APIRequestContext):
     headers |= {"Cookie": f"token={resp.json()["token"]}"}
 
 
-def test_booking_create(api_request_context: APIRequestContext):
-    booking_create_url_data = CreateBookingUrl()
-    
+@pytest.mark.parametrize("data,auth_token_url", zip(invalid_token_test.make_data(), repeat(invalid_token_test.make_request())))
+def test_auth_token_invalid(api_request_context: APIRequestContext, data, auth_token_url):
     resp = api_request_context.post(
-        booking_create_url_data.make_request(), 
-        data = booking_create_url_data.make_data()
+        auth_token_url, 
+        data = data
+        )
+
+    assert resp.ok
+
+@pytest.mark.parametrize("data,booking_url", zip(valid_booking_test.make_data(), repeat(valid_booking_test.make_request())))
+def test_booking_create_valid(api_request_context: APIRequestContext, data, booking_url):    
+    resp = api_request_context.post(
+        booking_url, 
+        data = data
         )
     
     assert resp.ok
 
     jsonschema.validate(resp.json(), booking_response_schema)
     
-    deletion = api_request_context.delete(DeleteBookingUrl(resp.json()["bookingid"]).make_request(), headers = headers)
+    deletion = api_request_context.delete(DeleteBookingValid(resp.json()["bookingid"]).make_request(), headers = headers)
 
     assert deletion.ok
+
+@pytest.mark.parametrize("data,booking_url", zip(invalid_booking_test.make_data(), repeat(invalid_booking_test.make_request())))
+def test_booking_create_invalid(api_request_context: APIRequestContext, data, booking_url):
+    resp = api_request_context.post(
+        booking_url, 
+        data = data
+        )
+    
+    assert not resp.ok
