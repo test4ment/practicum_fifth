@@ -1,0 +1,33 @@
+{
+    "username_password": [
+        {
+            "username": "user",
+            "password": "wordpass321"
+        },
+        {
+            "password": "password123"
+        },
+        {},
+        {
+            "username": true,
+            "password": 123
+        }
+    ],
+    "booking": [
+        {
+            "firstname" : "Michael",
+            "additionalneeds" : "Playwright autotest"
+        },
+        {
+            "firstname" : 1234,
+            "lastname" : 5678,
+            "totalprice" : false,
+            "depositpaid" : "false",
+            "bookingdates" : {
+                "checkin" : "9999-31-12",
+                "checkout" : "10000-99-99"
+            }
+        },
+        {}
+    ]
+}
