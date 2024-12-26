@@ -1,7 +1,7 @@
 import json
 
-valid_jsons = json.load(open("valid_data.json", "r"))
-invalid_jsons = json.load(open("invalid_data.json", "r"))
+valid_jsons = json.load(open("./api_test/valid_data.json", "r"))
+invalid_jsons = json.load(open("./api_test/invalid_data.json", "r"))
 
 class BaseTestUrl:
     def __init__(self) -> None:
