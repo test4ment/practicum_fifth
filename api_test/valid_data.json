@@ -1,0 +1,31 @@
+{
+    "username_password": [
+        {
+            "username": "admin",
+            "password": "password123"
+        }
+    ],
+    "booking": [
+        {
+            "firstname" : "Michael",
+            "lastname" : "White",
+            "totalprice" : 1337,
+            "depositpaid" : false,
+            "bookingdates" : {
+                "checkin" : "9999-31-12",
+                "checkout" : "10000-99-99"
+            },
+            "additionalneeds" : "Playwright autotest"
+        },
+        {
+            "firstname" : "Michael",
+            "lastname" : "White",
+            "totalprice" : 1337,
+            "depositpaid" : false,
+            "bookingdates" : {
+                "checkin" : "9999-31-12",
+                "checkout" : "10000-99-99"
+            }
+        }
+    ]
+}
